@@ -8,28 +8,29 @@ from click import option
 from joblib  import  load
 import pickle
 import gdown
-
+import os
 import requests
 
 # Correct FILE_ID and URL
-
 FILE_ID = "1m7Plv5DPkneL7ME0b6Aw8Uxeb9Nb2706"
-URL = f"https://drive.google.com/uc?export=download&id={FILE_ID}"
+URL = f"https://drive.google.com/uc?id={FILE_ID}"
+MODEL_PATH = "RandomForestRegressor.joblib"
 
 @st.cache_resource
 def load_model_from_drive():
-    url = f"https://drive.google.com/uc?id={FILE_ID}"
-    output = "RandomForestRegressor.joblib"
+    if not os.path.exists(MODEL_PATH):
+        st.write(" ⏳ Downloading model from Google Drive...")
+        gdown.download(URL, MODEL_PATH, quiet=False)
+    else:
+        st.write("Model already exists locally. Skipping download.")
 
-    # ✅ Use gdown to properly fetch large files
-    gdown.download(url, output, quiet=False)
-
-    model = load(output)
-    return model
+    models =load(MODEL_PATH)
+    return models
 
 rand_model = load_model_from_drive()
+
 st.title("🏠 House Resale Price Prediction")
-model=st.sidebar.selectbox('Select model to use',options=(['RandomForestRegressor','RandomForestRegressor']))
+model=st.sidebar.selectbox('Select model to use',options=(['RandomForestRegressor']))
 # User inputs
 town = st.text_input("Town",key="town")
 flat_type = st.selectbox("Flat-type",['select here',
