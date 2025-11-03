@@ -1,3 +1,4 @@
+from io import BytesIO
 import pandas as pd
 import streamlit as st
 import re
@@ -6,7 +7,27 @@ import numpy as np
 from click import option
 from joblib  import  load
 import pickle
+import gdown
 
+import requests
+
+# Correct FILE_ID and URL
+
+FILE_ID = "1m7Plv5DPkneL7ME0b6Aw8Uxeb9Nb2706"
+URL = f"https://drive.google.com/uc?export=download&id={FILE_ID}"
+
+@st.cache_resource
+def load_model_from_drive():
+    url = f"https://drive.google.com/uc?id={FILE_ID}"
+    output = "RandomForestRegressor.joblib"
+
+    # ✅ Use gdown to properly fetch large files
+    gdown.download(url, output, quiet=False)
+
+    model = load(output)
+    return model
+
+rand_model = load_model_from_drive()
 st.title("🏠 House Resale Price Prediction")
 model=st.sidebar.selectbox('Select model to use',options=(['RandomForestRegressor','RandomForestRegressor']))
 # User inputs
@@ -22,10 +43,7 @@ lease_commence_date = st.number_input("Lease Commence Year", min_value=1960, max
 month = st.text_input("Month (YYYY-MM)",key="month")
 
 
-# 🧠 Cache heavy objects so they don't reload every time
-@st.cache_resource
-def load_model():
-    return load('RandomForestRegressor.joblib')
+
 
 @st.cache_resource
 def load_encoder(path):
@@ -34,7 +52,7 @@ def load_encoder(path):
 
 # 🚀 Load resources only once
 with st.spinner("Loading model and encoders..."):
-    rand_model = load_model()
+    rand_model = rand_model
     flat_type_encoder = load_encoder('flat_type_encoder.pkl')
     town_encoder = load_encoder('town_encoder.pkl')
     street_name_encoder = load_encoder('street_name_encoder.pkl')
