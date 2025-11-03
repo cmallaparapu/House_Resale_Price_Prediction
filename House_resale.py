@@ -12,23 +12,27 @@ import os
 import requests
 
 # Correct FILE_ID and URL
-FILE_ID = "1m7Plv5DPkneL7ME0b6Aw8Uxeb9Nb2706"
-URL = f"https://drive.google.com/uc?id={FILE_ID}"
-MODEL_PATH = "RandomForestRegressor.joblib"
+# FILE_ID = "1m7Plv5DPkneL7ME0b6Aw8Uxeb9Nb2706"
+# URL = f"https://drive.google.com/uc?id={FILE_ID}"
+# MODEL_PATH = "RandomForestRegressor.joblib"
+#
+# @st.cache_resource
+# def load_model_from_drive():
+#     if not os.path.exists(MODEL_PATH):
+#         st.write(" ⏳ Downloading model from Google Drive...")
+#         gdown.download(URL, MODEL_PATH, quiet=False)
+#     else:
+#         st.write("Model already exists locally. Skipping download.")
+#
+#     models =load(MODEL_PATH)
+#     return models
+#
 
 @st.cache_resource
-def load_model_from_drive():
-    if not os.path.exists(MODEL_PATH):
-        st.write(" ⏳ Downloading model from Google Drive...")
-        gdown.download(URL, MODEL_PATH, quiet=False)
-    else:
-        st.write("Model already exists locally. Skipping download.")
+def load_model():
+    return load("RandomForestRegressor_small.joblib")
 
-    models =load(MODEL_PATH)
-    return models
-
-rand_model = load_model_from_drive()
-
+rand_model = load_model()
 st.title("🏠 House Resale Price Prediction")
 model=st.sidebar.selectbox('Select model to use',options=(['RandomForestRegressor']))
 # User inputs
