@@ -14,17 +14,18 @@ import requests
 
 
 FILE_ID = "1o-v4eoUged74SIMHVyOt4aYdmIKw1f2f"
+URL = f"https://drive.google.com/uc?id={FILE_ID}"
+MODEL_PATH = "RandomForestRegressor_small.joblib"
+
 @st.cache_resource
 def load_model_from_drive():
-    url = f"https://drive.google.com/uc?id={FILE_ID}"
-    output = "RandomForestRegressor_small.joblib"
+    """Downloads and loads model if not already cached."""
+    # Download model safely if not present
+    gdown.download(URL, MODEL_PATH, quiet=False, fuzzy=True)
+    model = load(MODEL_PATH)
+    return model
 
-    # ✅ Use gdown to properly fetch large files
-    gdown.download(url, output, quiet=False)
-
-    models = load(output)
-    return models
-
+# ✅ Load the model
 rand_model = load_model_from_drive()
 
 st.title("🏠 House Resale Price Prediction")
