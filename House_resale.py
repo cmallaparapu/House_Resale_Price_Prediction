@@ -12,14 +12,20 @@ import os
 import requests
 
 
-@st.cache_resource
-def load_model():
-    # get absolute path dynamically
-    model_path = os.path.join(os.path.dirname(__file__), "RandomForestRegressor_small.joblib")
-    return load(model_path)
 
-rand_model = load_model()
-st.success("✅ Model loaded successfully!")
+FILE_ID = "1o-v4eoUged74SIMHVyOt4aYdmIKw1f2f"
+@st.cache_resource
+def load_model_from_drive():
+    url = f"https://drive.google.com/uc?id={FILE_ID}"
+    output = "RandomForestRegressor.joblib"
+
+    # ✅ Use gdown to properly fetch large files
+    gdown.download(url, output, quiet=False)
+
+    models = load(output)
+    return models
+
+rand_model = load_model_from_drive()
 
 st.title("🏠 House Resale Price Prediction")
 model=st.sidebar.selectbox('Select model to use',options=(['RandomForestRegressor']))
