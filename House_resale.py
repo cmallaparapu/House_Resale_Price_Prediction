@@ -17,7 +17,7 @@ FILE_ID = "1o-v4eoUged74SIMHVyOt4aYdmIKw1f2f"
 @st.cache_resource
 def load_model_from_drive():
     url = f"https://drive.google.com/uc?id={FILE_ID}"
-    output = "RandomForestRegressor.joblib"
+    output = "RandomForestRegressor_small.joblib"
 
     # ✅ Use gdown to properly fetch large files
     gdown.download(url, output, quiet=False)
