@@ -17,15 +17,26 @@ FILE_ID = "1o-v4eoUged74SIMHVyOt4aYdmIKw1f2f"
 URL = f"https://drive.google.com/uc?id={FILE_ID}"
 MODEL_PATH = "RandomForestRegressor_small.joblib"
 
+
 @st.cache_resource
 def load_model_from_drive():
-    """Downloads and loads model if not already cached."""
-    # Download model safely if not present
-    gdown.download(URL, MODEL_PATH, quiet=False, fuzzy=True)
-    model = load(MODEL_PATH)
-    return model
+    """Download the model from Google Drive if not present, and load it safely."""
+    # Download model only if it doesn’t exist
+    if not os.path.exists(MODEL_PATH):
+        with st.spinner("📥 Downloading model from Google Drive..."):
+            gdown.download(URL, MODEL_PATH, quiet=False, fuzzy=True)
 
-# ✅ Load the model
+    # Try loading model safely
+    try:
+        models = load(MODEL_PATH)
+        st.success("✅ Model loaded successfully!")
+        return models
+    except Exception as e:
+        st.error(f"❌ Failed to load model: {e}")
+        st.stop()
+
+
+# Load the model once (cached)
 rand_model = load_model_from_drive()
 
 st.title("🏠 House Resale Price Prediction")
