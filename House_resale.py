@@ -10,34 +10,25 @@ import pickle
 import gdown
 import os
 import requests
+from huggingface_hub import hf_hub_download
 
 
-
-FILE_ID = "1o-v4eoUged74SIMHVyOt4aYdmIKw1f2f"
-URL = f"https://drive.google.com/uc?id={FILE_ID}"
-MODEL_PATH = "RandomForestRegressor_small.joblib"
-
+REPO_ID = "cmallaparapu/house-resale-model"
+FILENAME = "RandomForestRegressor.joblib"
 
 @st.cache_resource
-def load_model_from_drive():
-    """Download the model from Google Drive if not present, and load it safely."""
-    # Download model only if it doesn’t exist
-    if not os.path.exists(MODEL_PATH):
-        with st.spinner("📥 Downloading model from Google Drive..."):
-            gdown.download(URL, MODEL_PATH, quiet=False, fuzzy=True)
+def load_model_from_hf():
+    model_path = hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
+    models = load(model_path)
+    return models
 
-    # Try loading model safely
-    try:
-        models = load(MODEL_PATH)
-        st.success("✅ Model loaded successfully!")
-        return models
-    except Exception as e:
-        st.error(f"❌ Failed to load model: {e}")
-        st.stop()
+with st.spinner("📥 Downloading & loading model from Hugging Face..."):
+    rand_model = load_model_from_hf()
+
+st.success("✅ Model loaded successfully from Hugging Face!")
 
 
-# Load the model once (cached)
-rand_model = load_model_from_drive()
+
 
 st.title("🏠 House Resale Price Prediction")
 model=st.sidebar.selectbox('Select model to use',options=(['RandomForestRegressor']))
