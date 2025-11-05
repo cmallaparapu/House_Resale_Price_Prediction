@@ -18,15 +18,19 @@ filename = "RandomForestRegressor_small.joblib"
 
 @st.cache_resource
 def load_model_from_hf():
-    model_path = hf_hub_download(repo_id=repo_id, filename=filename)
-    models = load(model_path)
-    return models
+    try:
+        model_path = hf_hub_download(repo_id=repo_id, filename=filename)
+        models = load(model_path)
+        return models
+    except Exception as e:
+        st.error(f"❌ Failed to load model from Hugging Face:\n\n{e}")
+        return None
 
 with st.spinner("📥 Downloading & loading model from Hugging Face..."):
     rand_model = load_model_from_hf()
 
-st.success("✅ Model loaded successfully from Hugging Face!")
-
+if rand_model:
+    st.success("✅ Model loaded successfully from Hugging Face!")
 
 
 
