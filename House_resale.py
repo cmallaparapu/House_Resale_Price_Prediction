@@ -13,12 +13,12 @@ import requests
 from huggingface_hub import hf_hub_download
 
 
-REPO_ID = "cmallaparapu/house-resale-model"
-FILENAME = "RandomForestRegressor.joblib"
+repo_id = "cmallaparapu/House_Resale_Price_Predictions"
+filename = "RandomForestRegressor_small.joblib"
 
 @st.cache_resource
 def load_model_from_hf():
-    model_path = hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
+    model_path = hf_hub_download(repo_id=repo_id, filename=filename)
     models = load(model_path)
     return models
 
