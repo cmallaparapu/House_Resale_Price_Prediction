@@ -12,9 +12,8 @@ import os
 import requests
 from huggingface_hub import hf_hub_download
 
-
 repo_id = "cmallaparapu/House_Resale_Price_Predictions"
-filename = "RandomForestRegressor_small.joblib"
+filename = "RandomForestRegressor_small_compressed.joblib"
 
 @st.cache_resource
 def load_model_from_hf():
